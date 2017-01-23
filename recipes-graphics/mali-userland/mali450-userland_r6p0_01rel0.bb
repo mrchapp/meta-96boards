@@ -28,6 +28,7 @@ DEPENDS = "libdrm wayland mesa"
 VER ?= "${@bb.utils.contains('TUNE_FEATURES', 'aarch64', '64', 'hf', d)}"
 
 SRC_URI = " http://malideveloper.arm.com/downloads/drivers/binary/utgard/r6p0-01rel0/mali-450_r6p0-01rel0_linux_1+arm${VER}.tar.gz;destsuffix=mali;name=arm${VER}"
+SRC_URI += "file://70-mali-video.rules"
 
 S = "${WORKDIR}/wayland-drm"
 
@@ -51,6 +52,9 @@ do_install() {
     (cd ${D}/${libdir} && ln -sf libMali.so libgbm.so.1 \
     && ln -sf libgbm.so.1 libgbm.so)
     (cd ${D}/${libdir} && ln -sf libMali.so libwayland-egl.so)
+
+    install -D -m0644 ${WORKDIR}/70-mali-video.rules \
+        ${D}${sysconfdir}/udev/rules.d/70-mali-video.rules
 }
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
